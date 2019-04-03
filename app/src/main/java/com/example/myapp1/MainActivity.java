@@ -3,7 +3,6 @@ package com.example.myapp1;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -15,13 +14,15 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.service.carrier.CarrierService;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.SpannableString;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,11 +50,10 @@ public class MainActivity extends AppCompatActivity {
     private Button enableDisableBLEButton;
     private TextView textArea;
     private EditText sendField;
-    private Map<Integer,String> propsMap=new HashMap<>();
+    private Map<Integer, String> propsMap = new HashMap<>();
 
-    private final String serviceUUID="569a1101-b87f-490c-92cb-11ba5ea5167c";
-    private final String TxUUID="569a2000-b87f-490c-92cb-11ba5ea5167c";
-    private final String RxUUID="569a2001-b87f-490c-92cb-11ba5ea5167c";
+    private final String TxUUID = "569a2000-b87f-490c-92cb-11ba5ea5167c";
+    private final String RxUUID = "569a2001-b87f-490c-92cb-11ba5ea5167c";
 
     private BluetoothGattCharacteristic RxChar;
     private BluetoothDevice bleDevice;
@@ -88,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void printServiceInfo(BluetoothGattService service){
-        String serviceInfoString="";
+    private void printServiceInfo(BluetoothGattService service) {
+        String serviceInfoString = "";
         switch (service.getType()) {
             case BluetoothGattService.SERVICE_TYPE_PRIMARY: {
                 serviceInfoString = "Serwis typu: PRIMARY\n";
@@ -122,8 +122,8 @@ public class MainActivity extends AppCompatActivity {
             switch (newState) {
                 case BluetoothGatt.STATE_CONNECTED: {
                     runOnUiThread(() -> textArea.append("połączono się z urządzeniem: " + gatt.getDevice().getName() + "\n\n"));
-                    if(gatt.discoverServices()==false)
-                        Log.d(TAG,"Error: service discovery!!");
+                    if (!gatt.discoverServices())
+                        Log.d(TAG, "Error: service discovery!!");
                     break;
                 }
                 case BluetoothGatt.STATE_DISCONNECTED:
@@ -135,42 +135,40 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             Log.d(TAG, "serwisy odszukane!");
-            for(BluetoothGattService service:bleGATT.getServices()) {
+            for (BluetoothGattService service : bleGATT.getServices()) {
                 printServiceInfo(service);
-                Log.d(TAG,"No. char: "+service.getCharacteristics().size());
-                for(BluetoothGattCharacteristic characteristic:service.getCharacteristics()) {
+                Log.d(TAG, "No. char: " + service.getCharacteristics().size());
+                for (BluetoothGattCharacteristic characteristic : service.getCharacteristics()) {
                     printCharacteristicInfo(characteristic);
 
-                    if(characteristic.getUuid().equals(UUID.fromString(RxUUID))){
-                        RxChar=characteristic;
+                    if (characteristic.getUuid().equals(UUID.fromString(RxUUID))) {
+                        RxChar = characteristic;
                     }
-                    Log.d(TAG,"No. desc: "+characteristic.getDescriptors().size());
-                    for(BluetoothGattDescriptor descriptor:characteristic.getDescriptors()){
+                    Log.d(TAG, "No. desc: " + characteristic.getDescriptors().size());
+                    for (BluetoothGattDescriptor descriptor : characteristic.getDescriptors()) {
                         printDescriptorInfo(descriptor);
 
-                        if(characteristic.getUuid().equals(UUID.fromString(TxUUID))){
-                            Log.d(TAG,"Włączono powiadomienia");
-                            gatt.setCharacteristicNotification(characteristic,true);
+                        if (characteristic.getUuid().equals(UUID.fromString(TxUUID))) {
+                            Log.d(TAG, "Włączono powiadomienia");
+                            gatt.setCharacteristicNotification(characteristic, true);
                             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                             gatt.writeDescriptor(descriptor);
                         }
                     }
                 }
-                runOnUiThread(()->textArea.append("\n"));
+                runOnUiThread(() -> textArea.append("\n"));
             }
         }
 
-        // TODO: 2019-04-01 zrobić wysyłanie z poziomu aplikacji do serwera. 
-        
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            Log.d(TAG,"Charakterystka zmieniona");
-            runOnUiThread(()->textArea.append(new String(characteristic.getValue(), StandardCharsets.UTF_8)));
+            Log.d(TAG, "Charakterystka zmieniona");
+            runOnUiThread(() -> textArea.append(new String(characteristic.getValue(), StandardCharsets.UTF_8)));
         }
 
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            Log.d(TAG,"Charakterystka zapisana");
+            Log.d(TAG, "Charakterystka zapisana");
 //            runOnUiThread(()->textArea.append(characteristic.getValue()+"\n"));
         }
 
@@ -185,44 +183,45 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void printCharacteristicInfo(BluetoothGattCharacteristic charVar){
-        Log.d(TAG,"char printing...");
-        int propTmp=charVar.getProperties();
-        int permTmp=charVar.getPermissions();
-        final String characteristicInfoString="Charakterystyka:\n\tUUID: "+charVar.getUuid()+
-                "\n\tProp: "+propTmp+" ["+decodeProperties(propTmp)+"]\n\tPerm: "+
-                permTmp+" ["+decodePermissions(permTmp)+"]\n";
+    private void printCharacteristicInfo(BluetoothGattCharacteristic charVar) {
+        Log.d(TAG, "char printing...");
+        int propTmp = charVar.getProperties();
+        int permTmp = charVar.getPermissions();
+        final String characteristicInfoString = "Charakterystyka:\n\tUUID: " + charVar.getUuid() +
+                "\n\tProp: " + propTmp + " [" + decodeProperties(propTmp) + "]\n\tPerm: " +
+                permTmp + " [" + decodePermissions(permTmp) + "]\n";
         runOnUiThread(() -> textArea.append(characteristicInfoString));
     }
 
-    private void printDescriptorInfo(BluetoothGattDescriptor descVar){
-        Log.d(TAG,"desc printing...");
-        int permTmp=descVar.getPermissions();
-        final String descriptorInfoString="\t\tDeskryptor: "+permTmp+" ["+decodePermissions(permTmp)+"]\n\t\t" +
-                "Values: "+ Arrays.toString(descVar.getValue())+"\n";
+    private void printDescriptorInfo(BluetoothGattDescriptor descVar) {
+        Log.d(TAG, "desc printing...");
+        int permTmp = descVar.getPermissions();
+        final String descriptorInfoString = "\t\tDeskryptor: " + permTmp + " [" + decodePermissions(permTmp) + "]\n\t\t" +
+                "Values: " + Arrays.toString(descVar.getValue()) + "\n";
         runOnUiThread(() -> textArea.append(descriptorInfoString));
     }
 
 
-    private String decodeProperties(int prop){
-        String result="";
-        for(int i=0;i<6;i++){
-            if((prop&(1<<i))==(1<<i))
-                result+=propsMap.get(i);
+    private String decodeProperties(int prop) {
+        String result = "";
+        for (int i = 0; i < 6; i++) {
+            if ((prop & (1 << i)) == (1 << i))
+                result += propsMap.get(i);
         }
         return result;
     }
 
-    private String decodePermissions(int perm){
-        String result="";
+    private String decodePermissions(int perm) {
+        String result = "";
         switch (perm) {
             case BluetoothGattCharacteristic.PERMISSION_READ:
-                result ="READ";
+                result = "READ";
                 break;
             case BluetoothGattCharacteristic.PERMISSION_WRITE:
-                result="WRITE";
+                result = "WRITE";
                 break;
-                default: result="Unsupported";
+            default:
+                result = "Unsupported";
         }
         return result;
     }
@@ -252,11 +251,42 @@ public class MainActivity extends AppCompatActivity {
         if (bleAdapter == null || !bleAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivity(enableBtIntent);
-            enableDisableBLEButton.setText(R.string.turnOffBLE);
+//            enableDisableBLEButton.setText(R.string.turnOffBLE);
         } else if (bleAdapter != null && bleAdapter.isEnabled()) {
             gattServerDisconnet();
             bleAdapter.disable();
-            enableDisableBLEButton.setText(R.string.turnOnBLE);
+//            enableDisableBLEButton.setText(R.string.turnOnBLE);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        if(menu instanceof MenuBuilder){
+            MenuBuilder menuBuilder = (MenuBuilder) menu;
+            menuBuilder.setOptionalIconsVisible(true);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.enableBle:
+                initBLEAdapter();
+                enableDisableBLE();
+                return true;
+
+            case R.id.scanBle:
+                if (bleAdapter != null) {
+                    showDialog();
+                } else
+                    Toast.makeText(this, "Włącz BLE!!!", Toast.LENGTH_SHORT).show();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
         }
     }
 
@@ -265,34 +295,41 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        propsMap.put(0,"Broadcast"); propsMap.put(1,"Read");propsMap.put(2,"WriteNoResponse");
-        propsMap.put(3,"Write"); propsMap.put(4,"Notify"); propsMap.put(5,"Indicate");
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
+        propsMap.put(0, "Broadcast");
+        propsMap.put(1, "Read");
+        propsMap.put(2, "WriteNoResponse");
+        propsMap.put(3, "Write");
+        propsMap.put(4, "Notify");
+        propsMap.put(5, "Indicate");
 
         textArea = findViewById(R.id.textArea);
         textArea.setMovementMethod(new ScrollingMovementMethod()); //dodanie paska
 
-        sendField=findViewById(R.id.sendField);
-        Button sendButton=findViewById(R.id.sendButton);
-        sendButton.setOnClickListener((v)->{
-            if(!sendField.getText().toString().equals("") && bleDevice!=null && bleGATT!=null) {
-                if (RxChar!=null && RxChar.setValue(sendField.getText().toString()))
+        sendField = findViewById(R.id.sendField);
+        Button sendButton = findViewById(R.id.sendButton);
+        sendButton.setOnClickListener((v) -> {
+            if (!sendField.getText().toString().equals("") && bleDevice != null && bleGATT != null) {
+                if (RxChar != null && RxChar.setValue(sendField.getText().toString()))
                     bleGATT.writeCharacteristic(RxChar);
             }
         });
 
-        Button scanButton = findViewById(R.id.scanBLE);
-        scanButton.setOnClickListener((v) -> {
-            if (bleAdapter != null) {
-                showDialog();
-            } else
-                Toast.makeText(this, "Włącz BLE!!!", Toast.LENGTH_SHORT).show();
-        });
+//        Button scanButton = findViewById(R.id.scanBLE);
+//        scanButton.setOnClickListener((v) -> {
+//            if (bleAdapter != null) {
+//                showDialog();
+//            } else
+//                Toast.makeText(this, "Włącz BLE!!!", Toast.LENGTH_SHORT).show();
+//        });
 
-        enableDisableBLEButton = findViewById(R.id.enableBLEButton);
-        enableDisableBLEButton.setOnClickListener((v) -> {
-            initBLEAdapter();
-            enableDisableBLE();
-        });
+//        enableDisableBLEButton = findViewById(R.id.enableBLEButton);
+//        enableDisableBLEButton.setOnClickListener((v) -> {
+//            initBLEAdapter();
+//            enableDisableBLE();
+//        });
     }
 
     @Override
@@ -320,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.setAdapter(customListAdapter, (dialog2, which) -> {
             stopScanning();
-            bleDevice=customListAdapter.getItem(which).getDeviceHandler();
+            bleDevice = customListAdapter.getItem(which).getDeviceHandler();
             connectToServer(bleDevice); //podłącz się do
         });
         dialog.show();

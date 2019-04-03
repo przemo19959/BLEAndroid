@@ -7,6 +7,15 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,14 +31,16 @@
             android:id="@+id/scanBLE"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ScanBLE" />
+            android:text="@string/ScanBLE"
+            android:visibility="invisible"/>
 
         <Button
             android:id="@+id/enableBLEButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/turnOnBLE" />
+            android:text="@string/turnOnBLE"
+            android:visibility="invisible"/>
     </LinearLayout>
 
     <TextView

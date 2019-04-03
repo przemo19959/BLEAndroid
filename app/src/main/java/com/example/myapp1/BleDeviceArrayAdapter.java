@@ -36,9 +36,9 @@ public class BleDeviceArrayAdapter extends ArrayAdapter<BleDevice> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.ble_device_layout, null);
 
-        TextView name = view.findViewById(R.id.deviceName);
-        TextView rssi = view.findViewById(R.id.rssi);
-        TextView address = view.findViewById(R.id.address);
+        TextView name = (TextView)view.findViewById(R.id.deviceName);
+        TextView rssi = (TextView)view.findViewById(R.id.rssi);
+        TextView address = (TextView)view.findViewById(R.id.address);
 
         if(device.getName()==null)
             name.setText("Nazwa: Nieznana");
