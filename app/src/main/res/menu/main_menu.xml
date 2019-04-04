@@ -9,7 +9,14 @@
 
     <item
         android:id="@+id/scanBle"
-        android:title="@string/ScanBLE"
+        android:title="@string/scanBLE"
         android:icon="@drawable/scan_icon"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/clearArea"
+        android:title="@string/clearArea"
+        android:icon="@drawable/clear_area"
+        app:showAsAction="ifRoom"/>
+        />
 </menu>

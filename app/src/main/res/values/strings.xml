@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name">MyApp1</string>
-    <string name="ScanBLE">Skanuj</string>
-    <string name="ble_not_supported">Nie wspiera BLE</string>
-    <string name="ble_supported">Jest wsparcie BLE</string>
 
+    <string name="scanBLE">Skanuj</string>
     <string name="turnOnBLE">Włącz BLE</string>
     <string name="turnOffBLE">Wyłącz BLE</string>
+    <string name="clearArea">"Wyczyść"</string>
 </resources>
