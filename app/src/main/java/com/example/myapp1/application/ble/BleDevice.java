@@ -1,7 +1,13 @@
-package com.example.myapp1;
+package com.example.myapp1.application.ble;
 
 import android.bluetooth.BluetoothDevice;
 
+/**
+ * Klasa reprezentująca urządzenie BLE. Klasa wykorzystywana na potrzeby listy skanowania w
+ * której wyświetlane są aktywnie rozgłaszające się urządzenia BLE. Zawiera podstawowe pola
+ * opisujące nazwę urządzenia, poziom sygnału RSSI, adres urządzenia oraz uchwyt, dzięki
+ * któremu możliwe jest nawiązanie połączenia z urządzeniem.
+ */
 public class BleDevice {
     private String name;
     private int rssi;

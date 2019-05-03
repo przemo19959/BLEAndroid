@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <Switch
+        android:id="@+id/isTestOn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/isTestOnString"
+        android:checked="false"/>
+    <TextView
+        android:id="@+id/currentFramePattern"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    <EditText
+        android:id="@+id/framePattern"
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/framePattern"
+        android:enabled="false"/>
+</LinearLayout>

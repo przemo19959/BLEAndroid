@@ -5,4 +5,14 @@
     <string name="turnOnBLE">Włącz BLE</string>
     <string name="turnOffBLE">Wyłącz BLE</string>
     <string name="clearArea">"Wyczyść"</string>
+    <string name="sendData">Wyślij</string>
+
+    <string name="speedTest">Test przepływności</string>
+    <string name="speedTestIsOff">Test jest wyłączony</string>
+    <string name="framePattern">Wprowadź wzorzec ramki</string>
+    <string name="isTestOnString">Czy włączyć test?</string>
+    <string name="currentPattern">Aktualny wzorzec: </string>
+
+    <string name="chartTab">Wykres</string>
+    <string name="textTab">Terminal</string>
 </resources>

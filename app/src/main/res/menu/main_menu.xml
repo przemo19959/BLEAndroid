@@ -18,5 +18,9 @@
         android:title="@string/clearArea"
         android:icon="@drawable/clear_area"
         app:showAsAction="ifRoom"/>
-        />
+    <item
+        android:id="@+id/speedTest"
+        android:title="@string/speedTest"
+        android:icon="@drawable/speed_test"
+        app:showAsAction="never" />
 </menu>

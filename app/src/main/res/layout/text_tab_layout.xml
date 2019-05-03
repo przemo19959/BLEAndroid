@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/fragment1"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/infoLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/textArea"
+        android:layout_width="match_parent"
+        android:layout_height="430dp"
+        android:scrollbars="vertical"
+        android:textColor="@color/white"
+        android:gravity="bottom"
+        android:textStyle="bold"
+        android:background="@color/darkGrey"/>
+
+</LinearLayout>

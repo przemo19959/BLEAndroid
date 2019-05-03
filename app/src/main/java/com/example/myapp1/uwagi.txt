@@ -1,0 +1,2 @@
+Czasami może pojawić się problem, że telefon może wysyłać dane, ale z poziomu serwera nie można
+otrzymać danych. Należy zresetować serwer lub załadować ponownie skrypt do BL652.
